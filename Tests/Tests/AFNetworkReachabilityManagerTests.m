@@ -1,5 +1,5 @@
 // AFNetworkReachabilityManagerTests.h
-// Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
+// Copyright (c) 2011–2016 Alamofire Software Foundation ( http://alamofire.org/ )
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,14 +37,7 @@
 
     //both of these manager objects should always be reachable when the tests are run
     self.domainReachability = [AFNetworkReachabilityManager managerForDomain:@"localhost"];
-
-    //don't use the shared manager because it retains state between tests
-    //but recreate it each time in the same way that the shared manager is created
-    struct sockaddr_in address;
-    bzero(&address, sizeof(address));
-    address.sin_len = sizeof(address);
-    address.sin_family = AF_INET;
-    self.addressReachability = [AFNetworkReachabilityManager managerForAddress:&address];
+    self.addressReachability = [AFNetworkReachabilityManager manager];
 }
 
 - (void)tearDown
@@ -93,7 +86,7 @@
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithTimeout:5 handler:nil];
+    [self waitForExpectationsWithCommonTimeout];
 }
 
 - (void)testAddressReachabilityNotification {
@@ -119,9 +112,9 @@
 
     [manager startMonitoring];
 
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        [manager setReachabilityStatusChangeBlock:nil];
-    }];
+    [self waitForExpectationsWithCommonTimeout];
+    [manager setReachabilityStatusChangeBlock:nil];
+    
 }
 
 - (void)testAddressReachabilityBlock {
